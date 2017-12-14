@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.5
 # -*-encoding: utf-8-*-
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
 serial_format = '%Y%m%d%H%M'
 omni_format = '%Y-%m-%d %H:%M'
+
 
 class Omni():
     def __init__(self):
@@ -19,6 +20,9 @@ class Omni():
         self.note = ''  # type: str
         self.due = ''  # type: str
         self.parent = None  # type: Omni
+
+    def __str__(self):
+        return self.format_string()
 
     def get_level(self, line):
         """
@@ -186,7 +190,6 @@ class Omni():
 
 
 if __name__ == '__main__':
-
     # datetime and timedelta
     # time = datetime.strptime("201712092300", strp_format)
     # date_string = time.strftime(strf_format)
