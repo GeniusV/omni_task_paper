@@ -25,10 +25,29 @@ class OmniTest(unittest.TestCase):
             defer = defer + delta
             print("after add: " + str(defer))
             item.defer_time(defer)
-
         print(self.omni)
 
+    def test_iterable(self):
+        for item in self.omni:
+            print(item)
 
+    def test_create_new(self):
+        root = Omni()
+        name = 'part-'
+        one_day = timedelta(days = 1)
+        today = Omni.get_default_defer_datetime()
+        for i in range(11):
+            omni = Omni()
+            omni.name = name + str(i+1)
+            omni.defer_time(today + one_day * i)
+            root.append(omni)
+        print(root)
+
+    def test_get_default_due_datetime(self):
+        print(Omni.get_default_due_datetime())
+
+    def test_get_default_defer_datetime(self):
+        print(Omni.get_default_defer_datetime())
 
 
 

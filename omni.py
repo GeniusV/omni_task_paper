@@ -24,6 +24,9 @@ class Omni():
     def __str__(self):
         return self.format_string()
 
+    def __iter__(self):
+        return iter(self.child)
+
     def get_level(self, line):
         """
 
@@ -197,6 +200,18 @@ class Omni():
                 self.due = item
                 return
         return self.due
+
+    @classmethod
+    def get_default_defer_datetime(cls):
+        today_string = datetime.today().strftime("%Y%m%d")
+        default_datetime_string = today_string + "1100"
+        return datetime.strptime(default_datetime_string, serial_format)
+
+    @classmethod
+    def get_default_due_datetime(cls):
+        today_string = datetime.today().strftime("%Y%m%d")
+        default_datetime_string = today_string + "2300"
+        return datetime.strptime(default_datetime_string, serial_format)
 
 
 if __name__ == '__main__':
