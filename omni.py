@@ -35,24 +35,27 @@ class Omni():
             ct += 1
         return ct
 
-    def read(self, str = '', path = ''):
+    @classmethod
+    def read(cls, str = '', path = ''):
+        omni = Omni()
         if not path == '':
             with open(path, 'r', encoding = 'utf-8') as f:
                 str = f.read()
         lines = str.split('\n')
         index = 0
-        parent = self
+        parent = omni
         while index < len(lines):
             if lines[index] == '':
                 break
-            note, next_index = self.get_note(lines, index)
-            omni = self.create_new(lines[index], self.get_level(lines[index]), note)
+            note, next_index = omni.get_note(lines, index)
+            omni = omni.create_new(lines[index], omni.get_level(lines[index]), note)
             index = next_index
             if omni.level <= parent.level:
-                parent = self.get_parent(parent)
+                parent = omni.get_parent(parent)
             omni.parent = parent
             parent.child.append(omni)
             parent = omni
+        return omni
 
     def get_parent(self, node):
         """

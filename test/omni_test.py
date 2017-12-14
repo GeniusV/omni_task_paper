@@ -7,8 +7,7 @@ from omni import *
 class OmniTest(unittest.TestCase):
 
     def setUp(self):
-        self.omni = Omni()
-        self.omni.read(path = 'omni_test_text')
+        self.omni = Omni.read(path = 'omni_test_text')
 
     def test_output(self):
         print(self.omni)
