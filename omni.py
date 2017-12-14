@@ -38,6 +38,7 @@ class Omni():
     @classmethod
     def read(cls, str = '', path = ''):
         omni = Omni()
+        root = omni
         if not path == '':
             with open(path, 'r', encoding = 'utf-8') as f:
                 str = f.read()
@@ -55,7 +56,7 @@ class Omni():
             omni.parent = parent
             parent.child.append(omni)
             parent = omni
-        return omni
+        return root
 
     def get_parent(self, node):
         """
@@ -164,7 +165,10 @@ class Omni():
         """
         for item in args:
             if item == 'datetime':
-                return datetime.strptime(self.defer, omni_format)
+                if not self.defer == '':
+                    return datetime.strptime(self.defer, omni_format)
+                else:
+                    return None
             if isinstance(item, datetime):
                 self.defer = item.strftime(omni_format)
                 return
@@ -182,7 +186,10 @@ class Omni():
         """
         for item in args:
             if item == 'datetime':
-                return datetime.strptime(self.defer, omni_format)
+                if not self.due_time == '':
+                    return datetime.strptime(self.due, omni_format)
+                else:
+                    return None
             if isinstance(item, datetime):
                 self.due = item.strftime(omni_format)
                 return
@@ -198,8 +205,7 @@ if __name__ == '__main__':
     # date_string = time.strftime(strf_format)
     # time_delta = timedelta(days = 1)
 
-    omni = Omni()
-    omni.read(path = '/Users/GeniusV/Desktop/omni')
+    omni = Omni.read(path = '/Users/GeniusV/Desktop/omni')
     # write in here
 
 
