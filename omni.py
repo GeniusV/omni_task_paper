@@ -118,7 +118,8 @@ class Omni():
                                                                                                         self.context,
                                                                                                         flagged)
             if self.note != '':
-                string += pre + '    ' + self.note
+                temp = self.note.replace('\n', '\n' + pre + '    ')
+                string += pre + '    ' + temp + '\n'
         if recursion:
             for item in self.child:
                 string += item.format_string(recursion = True)
@@ -222,8 +223,6 @@ if __name__ == '__main__':
 
     omni = Omni.read(path = '/Users/GeniusV/Desktop/omni')
     # write in here
-
-
 
     with open('/Users/GeniusV/Desktop/omni-result', 'w', encoding = 'utf-8') as f:
         f.write(omni.format_string())
