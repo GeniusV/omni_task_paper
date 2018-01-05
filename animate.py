@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*-encoding: utf-8-*-
 import json
+import os
 from concurrent.futures import Future
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 
 import requests
-
 from omni import *
 
 
@@ -24,7 +24,25 @@ def defer_one_week(root):
 
 
 def generate_animate():
-    with open('animate.json', 'r', encoding = 'utf-8') as f:
+    with open('animate2.json', 'r', encoding = 'utf-8') as f:
+        '''
+        data format example:
+        [
+            {
+                "name": "粗点心战争2",
+                "e": "12",
+                "note": "https://bangumi.bilibili.com/anime/21603/",
+                "defer": "20180112",
+                "bilibili_bangumi_id": "21603",     // optional, bangumi id in bilibili.com
+                "out": false                        // optional, add this item to ignore generate current bangumi
+            },
+            {
+                ...
+                ...
+            },
+            ...
+        ]
+        '''
         raw = json.loads(f.read())
     root = Omni()
     for item in raw:
@@ -57,6 +75,10 @@ def generate_animate():
             child_omni.context = 'excellent animation'
             omni.append(child_omni)
     print(root)
+    if len(root.child) != 0:
+        os.system('''
+        osascript -e 'display notification "Bangumi Updated" with title "from Animate.py"'
+        ''')
     return root
 
 
@@ -80,7 +102,7 @@ def update_animate():
         release_time = release_time.strftime('%Y%m%d%H%M')
         name = data['bangumi_title']
         result.append({'name': name, 'defer': release_time, 'bangumi_id': data['season_id']})
-    print(result)
+    print(json.dumps(result, ensure_ascii = False, indent = 2))
 
     # compare to storage file and update release time
     with open('animate2.json', 'r', encoding = 'utf-8') as f:
@@ -193,6 +215,24 @@ def reset_animate_defer_date(animate_root, date):
         date += one_week
     return animate_root
 
+
+def animate_note(root, note, override = False):
+    '''
+    :type root: Omni
+    :type note: str
+    :param root:
+    :param note:
+    :param override:
+    :return:
+    '''
+    if not override:
+        if not root.note.endswith('\n'):
+           root.note += '\n'
+        note = root.note + note
+    root.note = note
+    for omni in root:
+        omni.note = note
+    print(root)
 
 if __name__ == '__main__':
     update_animate()
