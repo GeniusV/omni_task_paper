@@ -63,7 +63,7 @@ def generate_animate():
             continue
         try:
             start_time = datetime.strptime(item['defer'], serial_format)
-        except ValueError as e:
+        except ValueError:
             raise ValueError('defer time format error:{}'.format(item))
         week = timedelta(weeks = 1)
         root.append(omni)
@@ -129,7 +129,6 @@ def get_no_list():
     res = []
     for item in js:
         note = item['note']  # type: str
-        name = item['name']  # type: str
         if not note.startswith('https://bangumi.bilibili.com/anime/'):
             continue
         no = note[len('https://bangumi.bilibili.com/anime/'):-1]
@@ -187,7 +186,7 @@ def request(no):
     :param no: the list of bangumi id in str
     :return: jsonp string
     """
-    useragent = 'ozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+    useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                 'Chrome/63.0.3239.108 Safari/537.36 '
     url = 'https://bangumi.bilibili.com/jsonp/seasoninfo/{}.ver?callback=seasonListCallback&jsonp=jsonp'.format(no)
     response = requests.get(url, headers = {'user-agent': useragent})
@@ -219,14 +218,14 @@ def reset_animate_defer_date(animate_root, date):
 
 
 def animate_note(root, note, override = False):
-    '''
+    """
     :type root: Omni
     :type note: str
     :param root:
     :param note:
     :param override:
     :return:
-    '''
+    """
     if not override:
         if not root.note.endswith('\n'):
             root.note += '\n'
@@ -237,9 +236,14 @@ def animate_note(root, note, override = False):
 
 
 def cli(debug = False):
+    """
+    command line interface
+    :param debug:
+    :return:
+    """
     parser = argparse.ArgumentParser(description = 'this is used to create, edit animate info in Omnifocus')
     parser.add_argument('infile', help = 'input file', metavar = 'input')
-    parser.add_argument('-d', '--defer', type = int, nargs = '?' , help = 'defer weeks, default one week',
+    parser.add_argument('-d', '--defer', type = int, nargs = '?', help = 'defer weeks, default one week',
                         metavar = 'num_of_weeks', const = '1')
     parser.add_argument('-n', '--note', help = 'append note to the animate', metavar = 'note')
     parser.add_argument('--override', action = 'store_true', help = 'override previous note')
@@ -249,18 +253,24 @@ def cli(debug = False):
     parser.add_argument('-v', '--version', action = 'version', version = '$(prog)s v1.0')
     args = parser.parse_args()
 
+    # --- debug ---
     print(args) if debug else ''
 
+    # --- read file ---
     omni = Omni.read(path = args.infile)
 
+    # animate note
     if args.note:
         for bangumi in omni:
             animate_note(bangumi, args.note, True if args.override else False)
 
+    # animate defer weeks
     defer_week(omni, args.defer) if args.defer else ''
 
+    # save results
     with open(args.outfile, 'w', encoding = 'utf-8') as f:
         f.write(str(omni))
+
     print('\033[32m' + 'result:', args.outfile + '\033[0m')
 
 
