@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*-encoding: utf-8-*-
+import argparse
 import json
 import os
 from concurrent.futures import Future
@@ -10,17 +11,18 @@ import requests
 from omni import *
 
 
-def defer_one_week(root):
+def defer_week(root, weeks):
     """
+    :param weeks: int
     :type root: Omni
     """
-    one_week = timedelta(weeks = 1)
+    one_week = timedelta(weeks = weeks)
     if not root.defer == '':
         defer = root.defer_time('datetime')
         defer += one_week
         root.defer_time(defer)
     for omni in root:
-        defer_one_week(omni)
+        defer_week(omni, weeks)
 
 
 def generate_animate():
@@ -227,13 +229,42 @@ def animate_note(root, note, override = False):
     '''
     if not override:
         if not root.note.endswith('\n'):
-           root.note += '\n'
+            root.note += '\n'
         note = root.note + note
     root.note = note
     for omni in root:
         omni.note = note
-    print(root)
+
+
+def cli(debug = False):
+    parser = argparse.ArgumentParser(description = 'this is used to create, edit animate info in Omnifocus')
+    parser.add_argument('infile', help = 'input file', metavar = 'input')
+    parser.add_argument('-d', '--defer', type = int, nargs = '?' , help = 'defer weeks, default one week',
+                        metavar = 'num_of_weeks', const = '1')
+    parser.add_argument('-n', '--note', help = 'append note to the animate', metavar = 'note')
+    parser.add_argument('--override', action = 'store_true', help = 'override previous note')
+    parser.add_argument('-o', '--outfile', nargs = '?', default = './animate-result.txt',
+                        help = 'output path, default will be animate-result.txt',
+                        metavar = 'output')
+    parser.add_argument('-v', '--version', action = 'version', version = '$(prog)s v1.0')
+    args = parser.parse_args()
+
+    print(args) if debug else ''
+
+    omni = Omni.read(path = args.infile)
+
+    if args.note:
+        for bangumi in omni:
+            animate_note(bangumi, args.note, True if args.override else False)
+
+    defer_week(omni, args.defer) if args.defer else ''
+
+    with open(args.outfile, 'w', encoding = 'utf-8') as f:
+        f.write(str(omni))
+    print('\033[32m' + 'result:', args.outfile + '\033[0m')
+
 
 if __name__ == '__main__':
-    update_animate()
-    generate_animate()
+    # update_animate()
+    # generate_animate()
+    cli(debug = False)
