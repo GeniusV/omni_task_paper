@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 
 import requests
-from omni import *
+from .omni import *
 
 
 def defer_week(root, weeks):

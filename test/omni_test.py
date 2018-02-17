@@ -5,7 +5,7 @@ import unittest
 
 from datetime import timedelta
 
-from omni import *
+from ..omni import *
 
 class OmniTest(unittest.TestCase):
 
