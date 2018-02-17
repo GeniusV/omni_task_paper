@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.5
 # -*-encoding: utf-8-*-
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
 serial_format = '%Y%m%d%H%M'
 omni_format = '%Y-%m-%d %H:%M'
+
 
 class Omni():
     def __init__(self):
@@ -20,6 +21,15 @@ class Omni():
         self.due = ''  # type: str
         self.parent = None  # type: Omni
 
+    def __str__(self):
+        return self.format_string()
+
+    def __iter__(self):
+        return iter(self.child)
+
+    def __repr__(self):
+        return self.__str__()
+
     def get_level(self, line):
         """
 
@@ -31,24 +41,28 @@ class Omni():
             ct += 1
         return ct
 
-    def read(self, str = '', path = ''):
+    @classmethod
+    def read(cls, str = '', path = ''):
+        omni = Omni()
+        root = omni
         if not path == '':
             with open(path, 'r', encoding = 'utf-8') as f:
                 str = f.read()
         lines = str.split('\n')
         index = 0
-        parent = self
+        parent = omni
         while index < len(lines):
             if lines[index] == '':
                 break
-            note, next_index = self.get_note(lines, index)
-            omni = self.create_new(lines[index], self.get_level(lines[index]), note)
+            note, next_index = omni.get_note(lines, index)
+            omni = omni.create_new(lines[index], omni.get_level(lines[index]), note)
             index = next_index
             if omni.level <= parent.level:
-                parent = self.get_parent(parent)
+                parent = omni.get_parent(parent)
             omni.parent = parent
             parent.child.append(omni)
             parent = omni
+        return root
 
     def get_parent(self, node):
         """
@@ -107,7 +121,8 @@ class Omni():
                                                                                                         self.context,
                                                                                                         flagged)
             if self.note != '':
-                string += pre + '    ' + self.note
+                temp = self.note.replace('\n', '\n' + pre + '    ')
+                string += pre + '    ' + temp + '\n'
         if recursion:
             for item in self.child:
                 string += item.format_string(recursion = True)
@@ -157,7 +172,10 @@ class Omni():
         """
         for item in args:
             if item == 'datetime':
-                return datetime.strptime(self.defer, omni_format)
+                if not self.defer == '':
+                    return datetime.strptime(self.defer, omni_format)
+                else:
+                    return None
             if isinstance(item, datetime):
                 self.defer = item.strftime(omni_format)
                 return
@@ -175,7 +193,10 @@ class Omni():
         """
         for item in args:
             if item == 'datetime':
-                return datetime.strptime(self.defer, omni_format)
+                if not self.due_time == '':
+                    return datetime.strptime(self.due, omni_format)
+                else:
+                    return None
             if isinstance(item, datetime):
                 self.due = item.strftime(omni_format)
                 return
@@ -184,19 +205,27 @@ class Omni():
                 return
         return self.due
 
+    @classmethod
+    def get_default_defer_datetime(cls):
+        today_string = datetime.today().strftime("%Y%m%d")
+        default_datetime_string = today_string + "1100"
+        return datetime.strptime(default_datetime_string, serial_format)
+
+    @classmethod
+    def get_default_due_datetime(cls):
+        today_string = datetime.today().strftime("%Y%m%d")
+        default_datetime_string = today_string + "2300"
+        return datetime.strptime(default_datetime_string, serial_format)
+
 
 if __name__ == '__main__':
-
     # datetime and timedelta
     # time = datetime.strptime("201712092300", strp_format)
     # date_string = time.strftime(strf_format)
     # time_delta = timedelta(days = 1)
 
-    omni = Omni()
-    omni.read(path = '/Users/GeniusV/Desktop/omni')
+    omni = Omni.read(path = '/Users/GeniusV/Desktop/omni')
     # write in here
-
-
 
     with open('/Users/GeniusV/Desktop/omni-result', 'w', encoding = 'utf-8') as f:
         f.write(omni.format_string())

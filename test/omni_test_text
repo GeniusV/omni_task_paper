@@ -1,0 +1,8 @@
+- Software Test Final Report @parallel(false) @autodone(false) @context(Missions : Normal Priority) @due(2017-12-25 11:35)
+    - Execution of Software Test Final Report @parallel(false) @autodone(false) @context(Missions : Normal Priority) @due(2017-12-24 23:00)
+        - wate for Software Test Final Report instruction, if over due, execute Plan B @parallel(false) @autodone(false) @context(Waiting) @due(2017-12-18 23:00)
+        - Execution of Software Test Final Report Plan B @parallel(false) @autodone(false) @context(Missions : Normal Priority)
+            - start to execute Software Test Final Report Plan B @parallel(false) @autodone(false) @context(Missions : High Priority)
+            - search for materials and make the plan @parallel(false) @autodone(false) @context(Missions : High Priority)
+            - do the reprot of in Plan B @parallel(false) @autodone(false) @context(Missions : Normal Priority)
+    - hand in Software Test Final Report @parallel(true) @autodone(false) @context(Missions : Normal Priority) @defer(2017-12-24 06:00)
