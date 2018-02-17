@@ -27,6 +27,9 @@ class Omni():
     def __iter__(self):
         return iter(self.child)
 
+    def __repr__(self):
+        return self.__str__()
+
     def get_level(self, line):
         """
 
