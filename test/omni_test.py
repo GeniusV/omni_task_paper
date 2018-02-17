@@ -5,10 +5,10 @@ import unittest
 
 from datetime import timedelta
 
-from ..omni import *
+from omni import *
+
 
 class OmniTest(unittest.TestCase):
-
     def setUp(self):
         self.omni = Omni.read(path = 'omni_test_text')
 
@@ -38,7 +38,7 @@ class OmniTest(unittest.TestCase):
         today = Omni.get_default_defer_datetime()
         for i in range(11):
             omni = Omni()
-            omni.name = name + str(i+1)
+            omni.name = name + str(i + 1)
             omni.defer_time(today + one_day * i)
             root.append(omni)
         print(root)
@@ -50,11 +50,5 @@ class OmniTest(unittest.TestCase):
         print(Omni.get_default_defer_datetime())
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
