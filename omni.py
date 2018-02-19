@@ -30,6 +30,17 @@ class Omni():
     def __repr__(self):
         return self.__str__()
 
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return self.child[item]
+        elif isinstance(item, slice):
+            start = item.start if item.start is not None else 0
+            stop = item.stop if item.stop is not None else len(self.child)
+            length = len(self.child)
+            start = length + start + 1 if start < 0 else start
+            stop = length + stop + 1 if stop < 0 else stop
+            return self.child[start:stop]
+
     def get_level(self, line):
         """
 

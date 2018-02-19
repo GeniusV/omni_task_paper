@@ -10,6 +10,7 @@ from omni import *
 
 class OmniTest(unittest.TestCase):
     def setUp(self):
+        # default raw data
         self.omni = Omni.read(path = 'omni_test_text')
 
     def test_output(self):
@@ -48,6 +49,9 @@ class OmniTest(unittest.TestCase):
 
     def test_get_default_defer_datetime(self):
         print(Omni.get_default_defer_datetime())
+
+    def test_getItem(self):
+        print(self.omni[0])
 
 
 if __name__ == '__main__':
