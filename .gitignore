@@ -1,3 +1,11 @@
 .idea/
 *.DS_Store
 __pycache__/
+
+# Project files
+/*.html
+/*.pyc
+/*.json
+/run.py
+/test.py
+/tools.py
