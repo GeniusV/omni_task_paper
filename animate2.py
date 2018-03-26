@@ -5,14 +5,16 @@
 
 import json
 import logging
+import os
 import sys
 from concurrent.futures import Future
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
-from datetime import datetime
+from datetime import datetime, timedelta
 from logging import Logger
 
 import requests
+from omni import Omni
 
 original_animate_file = "2018-april-new-bangumi_raw.json"
 output_file = "2018-searched-april-new-bangumi.json"
@@ -85,6 +87,12 @@ class NewBangumiManager:
             return json_string
         return raw_response
 
+    def if_need_to_update(self):
+        for item in self.data_list:
+            if item['inBilibili'] and not item['note'] and item['defer']:
+                return True
+        return False
+
     def init_new_bangumi_json(self, bilibili_repo_url, check_length = 3, raw_list_file = ''):
         """
         This method will compare my bangumi list, with bangumi list in bilibili.com
@@ -128,12 +136,11 @@ class NewBangumiManager:
                 'bilibili_url': "",
                 'bilibili_id': "",
                 "note": "",
-                "e": 0,
+                "e": 12,
                 "defer": ""
             }
             for item in raw_bangumis:
                 if my[:check_length] in item['title'] or my[-check_length:] in item['title']:
-
                     self.logger.info("{} is found, initing...".format(item['title']))
 
                     new['name'] = item['title']
@@ -190,10 +197,78 @@ class NewBangumiManager:
         logger.addHandler(console_handler)
         return logger
 
+    def generate_omni(self, animate_list):
+        root = Omni()
+        for item in animate_list:
+            omni = Omni()
+            omni.name = item['name']
+            self.logger.debug('generating animate: "{}"'.format(item['name']))
+            omni.note = item['bilibili_url']
+            omni.parallel = True
+            omni.auto_done = True
+            omni.context = 'watch : excellent animation'
+            if len(item['defer']) < 12 or 'out' in item:
+                self.logger.error('"{}" defer "{}" format is not correct.'.format(item['name'], item['defer']))
+            try:
+                start_time = datetime.strptime(item['defer'], '%Y%m%d%H%M%S')
+            except ValueError:
+                raise ValueError('defer time format error:{}'.format(item))
+            week = timedelta(weeks = 1)
+            for i in range(item['e']):
+                child_omni = Omni()
+                child_omni.name = omni.name + ' - ' + str(i + 1)
+                child_omni.note = omni.note
+                child_omni.defer = start_time + week * i
+                child_omni.context = 'excellent animation'
+                omni.append(child_omni)
+            root.append(omni)
+        return root
 
-if __name__ == '__main__':
+    def generate_animate_not_in_bilibili(self):
+        return self.generate_omni([item for item in self.data_list if not item['inBilibili']])
+
+    def generate_animate_in_bilibili(self, update_data_status = False):
+        ready_list = [item for item in self.data_list if item['inBilibili'] and not item['note'] and item['defer']]
+        self.logger.debug("ready to generate animate in bilibili: {}".format(ready_list))
+        if update_data_status:
+            self.logger.debug("update_data_status is on...")
+            for item in ready_list:
+                item['note'] = item['bilibili_url']
+                self.logger.debug('"{}" note is updated: "{}"'.format(item['name'], item['note']))
+        return self.generate_omni(ready_list)
+
+def run_auto():
+    try:
+        a = NewBangumiManager(
+            file_path = '/Users/GeniusV/Documents/pythonProject/omnifocus/2018-searched-april-new-bangumi.json')
+        a.init_new_bangumi_json(bilibili_new_bangumi_url, raw_list_file = "/Users/GeniusV/Documents/pythonProject/omnifocus/2018-april-new-bangumi_raw.json")
+        a.update_bangumi()
+        if a.if_need_to_update():
+            os.system('''
+                osascript -e 'display notification "Bangumi Updated" with title "from Animate2.py"'
+            ''')
+    except Exception as e:
+        os.system('''
+            osascript -e 'display notification "Bangumi Updated Error!!!!" with title "from Animate2.py"'
+        ''')
+
+def run_script():
+    a = NewBangumiManager(
+        file_path = '2018-searched-april-new-bangumi.json')
+    # a.init_new_bangumi_json(bilibili_new_bangumi_url, raw_list_file = "2018-april-new-bangumi_raw.json")
+    a.update_bangumi()
+    print(a.generate_animate_in_bilibili(update_data_status = True))
+    # print(a.if_need_to_update())
+    a.save()
+
+def reset():
     a = NewBangumiManager(
         file_path = '2018-searched-april-new-bangumi.json')
     a.init_new_bangumi_json(bilibili_new_bangumi_url, raw_list_file = "2018-april-new-bangumi_raw.json")
-    a.update_bangumi()
     a.save()
+
+
+if __name__ == '__main__':
+    # run_auto()
+    run_script()
+    # reset()
