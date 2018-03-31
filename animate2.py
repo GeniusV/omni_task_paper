@@ -89,7 +89,7 @@ class NewBangumiManager:
 
     def if_need_to_update(self):
         for item in self.data_list:
-            if item['inBilibili'] and not item['note'] and item['defer']:
+            if item['inBilibili'] and not item['note'] and item['defer'] and item['e']:
                 return True
         return False
 
