@@ -228,7 +228,7 @@ class NewBangumiManager:
         return self.generate_omni([item for item in self.data_list if not item['inBilibili']])
 
     def generate_animate_in_bilibili(self, update_data_status = False):
-        ready_list = [item for item in self.data_list if item['inBilibili'] and not item['note'] and item['defer']]
+        ready_list = [item for item in self.data_list if item['inBilibili'] and not item['note'] and item['defer'] and item['e']]
         self.logger.debug("ready to generate animate in bilibili: {}".format(ready_list))
         if update_data_status:
             self.logger.debug("update_data_status is on...")
