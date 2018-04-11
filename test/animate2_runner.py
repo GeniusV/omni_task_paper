@@ -33,5 +33,12 @@ class Animate2Runner(unittest.TestCase):
         a.init_new_bangumi_json(bilibili_new_bangumi_url, raw_list_file = "../2018-april-new-bangumi_raw.json")
         a.save()
 
+    def test_generate_bangumi_manually(self):
+        NewBangumiManager.generate_bangumi_manually("命运石之门0", datetime(year = 2018, month = 4, day = 12, hour = 2),
+                                                    e = 24,
+                                                    note = "http://v.qq.com/detail/g/gvz5bapszkkjbw8.html",
+                                                    context = "excellent animation")
+
+
 if __name__ == '__main__':
     unittest.main()

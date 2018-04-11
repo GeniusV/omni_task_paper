@@ -50,6 +50,42 @@ class NewBangumiManager:
             self.file_path = "result.json"
 
     @staticmethod
+    def generate_bangumi_manually(name, defer, e = 12, start = 1, note = "", context = "normal animation"):
+        """
+        :type name str
+        :type defer datetime | str
+        :param name:
+        :param defer: bangumi defer time, except for a datetime or a str which format is %Y%m%d%H%M
+        :param e: total episode count
+        :param start: start episode num
+        :param note:
+        :return:
+        """
+        w1 = timedelta(weeks = 1)
+        root = Omni()
+        bangumi = Omni()
+        bangumi.name = name
+        bangumi.parallel = True
+        bangumi.auto_done = True
+        bangumi.note = note
+        bangumi.context = "watch : " + context
+        root.append(bangumi)
+        begin_time = defer if isinstance(defer, datetime) else datetime.strptime(defer, "%Y%m%d%H%M")
+        for i in range(start, e + 1):
+            child = Omni()
+            child.name = "{} - {}".format(bangumi.name, i)
+            child.parallel = bangumi.parallel
+            child.defer = begin_time
+            begin_time += w1
+            child.auto_done = bangumi.auto_done
+            child.note = bangumi.note
+            child.context = bangumi.context
+            bangumi.append(child)
+        print(root)
+
+
+
+    @staticmethod
     def read_json(path):
         with open(path, 'r', encoding = 'utf-8') as f:
             json_string = f.read()
