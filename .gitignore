@@ -5,7 +5,7 @@
 /run.py
 /test.py
 /tools.py
-
+*.plist
 
 # ======== python =========
 # Byte-compiled / optimized / DLL files
