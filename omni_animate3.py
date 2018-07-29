@@ -142,7 +142,7 @@ def get_defer(delay, defer):
             result = datetime.strptime(defer, serial_format)
         except Exception:
             print('Defer format Example: 201809012300 your is {}.'.format(defer))
-            exit()
+            return
 
     return result
 
@@ -157,7 +157,7 @@ def run(args = None):
     global root
     parser = argparse.ArgumentParser(description = 'This is a task paper generator build for animate.')
     parser.add_argument('input', help = 'output path', nargs = '?')
-    parser.add_argument('--delay', help = 'Delay mode, Format: %Y%m%d%H%M for specify time, or \d[wWdD] for delay '
+    parser.add_argument('--delay', help = 'Delay mode, Format: YYYMMDDHHmm for specify time, or \d[wWdD] for delay '
                                           'relatively.', default = '')
     parser.add_argument('-d', '--defer', help = 'The datetime of animate begins.')
     parser.add_argument('-n', '--name', help = 'Name of the animate.')
@@ -165,10 +165,10 @@ def run(args = None):
     parser.add_argument('-e', '--episode', help = 'The total count of animate episodes.', type = int)
     parser.add_argument('-t', '--note', help = 'Note of the animate. This will be automatically calculated if the'
                                                'animate is in blibili. Manually use this will overwrite calculated '
-                                               'note.', default = '')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.0 by GeniusV')
+                                               'note.', default = [], nargs = '+')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.1 by GeniusV')
     args = parser.parse_args(args)
-    if len(sys.argv) < 1:
+    if len(sys.argv) < 2:
         parser.print_usage()
         return
 
@@ -178,9 +178,9 @@ def run(args = None):
     defer = get_defer(args.delay, args.defer)
 
     if not args.input:
-        generate(args.name, args.id, defer, args.episode, args.note)
+        generate(args.name, args.id, defer, args.episode, '\n'.join(args.note))
     else:
-        modify_omni(defer, args.note)
+        modify_omni(defer, '\n'.join(args.note))
     print(root)
 
 
