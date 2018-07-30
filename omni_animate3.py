@@ -150,10 +150,10 @@ def get_defer(delay, defer):
 def modify_omni(defer: datetime, note):
     for i, child in enumerate(root.child):
         child.defer = defer + i * w1
-        child.note = note
+        child.note = note if note else child.note
 
 
-def run(args = None):
+def run(args = None, debug = False):
     global root
     parser = argparse.ArgumentParser(description = 'This is a task paper generator build for animate.')
     parser.add_argument('input', help = 'output path', nargs = '?')
@@ -166,9 +166,9 @@ def run(args = None):
     parser.add_argument('-t', '--note', help = 'Note of the animate. This will be automatically calculated if the'
                                                'animate is in blibili. Manually use this will overwrite calculated '
                                                'note.', default = [], nargs = '+')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.1 by GeniusV')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.2 by GeniusV')
     args = parser.parse_args(args)
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 and not debug:
         parser.print_usage()
         return
 
