@@ -2,8 +2,9 @@
 # -*-encoding: utf-8-*-
 
 # Created by GeniusV on 7/29/18.
-
+import re
 import unittest
+from datetime import datetime
 
 import omni_animate3
 from omnifocus.omni import Omni
@@ -76,4 +77,27 @@ class AnimateTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             omni_animate3.run('-h'.split(), debug = True)
 
+    def test_regex(self):
+        pub_date = re.search('pub_date=(\d\d\d\d)', omni_animate3.INDEX_URL).group(1)
+        season_month = re.search('season_month=(\d|\d\d)', omni_animate3.INDEX_URL).group(1)
+
+        print(pub_date, season_month)
+
+
+    def test_get_season_id(self):
+        season_id = omni_animate3.get_session_id_by_media_id(12392)
+        print(season_id)
+
+
+    def test_datetime_format(self):
+        date_str = '2018-07-10 22:30:00'
+        result = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        print(result)
+
+    def test_get_bangumi_detail_by_url(self):
+        result = omni_animate3.get_bangumi_detail_by_url('https://www.bilibili.com/bangumi/media/md102392/?spm_id_from=666.10.bangumi_detail.1')
+        print(result)
+
+    def test_generate_by_url(self):
+        omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md102392/?spm_id_from=666.10.bangumi_detail.1'.split(), debug = True)
 
