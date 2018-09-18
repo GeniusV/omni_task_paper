@@ -78,8 +78,8 @@ class AnimateTest(unittest.TestCase):
             omni_animate3.run('-h'.split(), debug = True)
 
     def test_regex(self):
-        pub_date = re.search('pub_date=(\d\d\d\d)', omni_animate3.INDEX_URL).group(1)
-        season_month = re.search('season_month=(\d|\d\d)', omni_animate3.INDEX_URL).group(1)
+        pub_date = re.search('pub_date=(\d\d\d\d)', omni_animate3.index_url).group(1)
+        season_month = re.search('season_month=(\d+)', omni_animate3.index_url).group(1)
 
         print(pub_date, season_month)
 
@@ -95,9 +95,9 @@ class AnimateTest(unittest.TestCase):
         print(result)
 
     def test_get_bangumi_detail_by_url(self):
-        result = omni_animate3.get_bangumi_detail_by_url('https://www.bilibili.com/bangumi/media/md102392/?spm_id_from=666.10.bangumi_detail.1')
+        result = omni_animate3.get_bangumi_detail_by_url('https://www.bilibili.com/bangumi/media/md134912/?spm_id_from=666.10.bangumi_detail.1')
         print(result)
 
     def test_generate_by_url(self):
-        omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md102392/?spm_id_from=666.10.bangumi_detail.1'.split(), debug = True)
+        omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md134912/?spm_id_from=666.10.bangumi_detail.1'.split(), debug = True)
 

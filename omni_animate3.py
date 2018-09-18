@@ -41,7 +41,8 @@ h21 = timedelta(hours = 21)
 h22 = timedelta(hours = 22)
 h23 = timedelta(hours = 23)
 
-index_url = 'https://www.bilibili.com/anime/index/?spm_id_from=333.334.primary_menu.13#season_version=-1&area=2&is_finish=0&copyright=-1&season_status=-1&season_month=7&pub_date=2018&style_id=-1&order=3&st=1&sort=0&page=1'
+index_url = 'https://www.bilibili.com/anime/index/?spm_id_from=333.334.primary_menu.13#season_version=-1&area=2&is_finish=-1&copyright=-1&season_status=-1&season_month=10&pub_date=2018&style_id=-1&order=3&st=1&sort=0&page=1'
+# index_url = 'https://www.bilibili.com/anime/index/?spm_id_from=333.334.primary_menu.13#season_version=-1&area=2&is_finish=-1&copyright=-1&season_status=-1&season_month=10&pub_date=2018&style_id=-1&order=3&st=1&sort=0&page=1'
 INDEX_JSON_URL='https://bangumi.bilibili.com/media/web_api/search/result?season_version=-1&area=2&is_finish=0&copyright=-1&season_status=-1&season_month={season_month}&pub_date={pub_date}&style_id=-1&order=3&st=1&sort=0&page={page}&season_type=1&pagesize=30'
 BILIBILI_BANGUMI_DETAIL_URL = 'https://bangumi.bilibili.com/jsonp/seasoninfo/{}.ver?callback=seasonListCallback&jsonp=jsonp'
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) ' \
@@ -155,7 +156,7 @@ def modify_omni(defer: datetime, note):
 
 def get_session_id_by_media_id(media_id: int):
     pub_date = re.search('pub_date=(\d\d\d\d)', index_url).group(1)
-    season_month = re.search('season_month=(\d|\d\d)', index_url).group(1)
+    season_month = re.search('season_month=(\d+)', index_url).group(1)
     page = 1
     while True:
         url = INDEX_JSON_URL.format(pub_date = pub_date, season_month= season_month, page = page)
@@ -212,7 +213,7 @@ def run(args = None, debug = False):
                                                'animate is in blibili. Manually use this will overwrite calculated '
                                                'note.', default = [], nargs = '+')
     parser.add_argument('-u', '--url', help = 'The url of bilibili bangumi page.')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3 by GeniusV')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.1 by GeniusV')
     args = parser.parse_args(args)
     if len(sys.argv) < 2 and not debug:
         parser.print_usage()
