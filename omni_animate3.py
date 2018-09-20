@@ -101,6 +101,7 @@ def generate(name, id, start: datetime, e, note = ''):
     main.name = name
     main.context = context
     main.parallel = True
+    main.auto_done = True
 
     if not e:
         e = 12
@@ -213,7 +214,7 @@ def run(args = None, debug = False):
                                                'animate is in blibili. Manually use this will overwrite calculated '
                                                'note.', default = [], nargs = '+')
     parser.add_argument('-u', '--url', help = 'The url of bilibili bangumi page.')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.1 by GeniusV')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.2 by GeniusV')
     args = parser.parse_args(args)
     if len(sys.argv) < 2 and not debug:
         parser.print_usage()
