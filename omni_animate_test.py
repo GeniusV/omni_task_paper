@@ -99,5 +99,5 @@ class AnimateTest(unittest.TestCase):
         print(result)
 
     def test_generate_by_url(self):
-        omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md134912/?spm_id_from=666.10.bangumi_detail.1'.split(), debug = True)
+        omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md139252/?spm_id_from=666.10.bangumi_detail.2'.split(), debug = True)
 

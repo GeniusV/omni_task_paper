@@ -191,6 +191,8 @@ def get_bangumi_detail_by_url(url: str):
     data = response['result']
     if 'total_count' in data:
         episode = int(data['total_count'])
+    if episode < 1:
+        episode = 12
 
     if 'title' in data:
         name = data['title']
@@ -214,7 +216,7 @@ def run(args = None, debug = False):
                                                'animate is in blibili. Manually use this will overwrite calculated '
                                                'note.', default = [], nargs = '+')
     parser.add_argument('-u', '--url', help = 'The url of bilibili bangumi page.')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.2 by GeniusV')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.3 by GeniusV')
     args = parser.parse_args(args)
     if len(sys.argv) < 2 and not debug:
         parser.print_usage()
