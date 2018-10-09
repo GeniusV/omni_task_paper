@@ -101,3 +101,5 @@ class AnimateTest(unittest.TestCase):
     def test_generate_by_url(self):
         omni_animate3.run('-u https://www.bilibili.com/bangumi/media/md139252/?spm_id_from=666.10.bangumi_detail.2'.split(), debug = True)
 
+    def test_increase_episode(self):
+        omni_animate3.run('/Users/GeniusV/Desktop/omni.txt -e 15 -d 201809011100'.split(), debug = True)

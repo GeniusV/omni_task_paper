@@ -3,6 +3,7 @@
 
 # Created by GeniusV on 5/30/18.
 import argparse
+import copy
 import json
 import re
 import sys
@@ -155,6 +156,23 @@ def modify_omni(defer: datetime, note):
         child.defer = defer + i * w1
         child.note = note if note else child.note
 
+def increase_episode(episode: int):
+    latest = root.child[-1]
+    match = re.match('(.+) - (\d+)', latest.name)
+    if not match:
+        raise Exception("Can not match name: " + latest.name )
+
+    name = match.group(1) + ' - {}'
+    current_top = int(match.group(2))
+    defer = latest.defer
+    for i in range(current_top + 1, episode + 1):
+        defer = defer + w1
+        new_omni = copy.deepcopy(latest)
+        new_omni.name = name.format(i)
+        new_omni.defer = defer
+        root.append(new_omni)
+
+
 def get_session_id_by_media_id(media_id: int):
     pub_date = re.search('pub_date=(\d\d\d\d)', index_url).group(1)
     season_month = re.search('season_month=(\d+)', index_url).group(1)
@@ -216,7 +234,7 @@ def run(args = None, debug = False):
                                                'animate is in blibili. Manually use this will overwrite calculated '
                                                'note.', default = [], nargs = '+')
     parser.add_argument('-u', '--url', help = 'The url of bilibili bangumi page.')
-    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.3.3 by GeniusV')
+    parser.add_argument('-v', '--version', action = 'version', version = '%(prog)s v3.4 by GeniusV')
     args = parser.parse_args(args)
     if len(sys.argv) < 2 and not debug:
         parser.print_usage()
@@ -237,6 +255,9 @@ def run(args = None, debug = False):
         generate(args.name, args.id, defer, args.episode, '\n'.join(args.note))
     else:
         modify_omni(defer, '\n'.join(args.note))
+        if args.episode:
+            increase_episode(args.episode)
+
     print(root)
 
 
