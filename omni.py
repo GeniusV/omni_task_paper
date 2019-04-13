@@ -15,7 +15,7 @@ class Omni():
         self.parallel = False  # type: bool
         self.auto_done = False  # type: bool
         self.context = ''  # type: str
-        self.defer = ''  # type: str
+        self.defer = ''  # type: str | datetime
         self.flagged = False  # type: bool
         self.note = ''  # type: str
         self.due = ''  # type: str
@@ -124,11 +124,13 @@ class Omni():
                 flagged = ''
             for index in range(0, self.level):
                 pre += '    '
+
+            defer = self.defer if isinstance(self.defer, str) else self.defer.strftime(omni_format)
             string += '{}- {} @parallel({}) @autodone({}) @due({}) @defer({}) @context({}) {}\n'.format(pre, self.name,
                                                                                                         self.parallel,
                                                                                                         self.auto_done,
                                                                                                         self.due,
-                                                                                                        self.defer,
+                                                                                                        defer,
                                                                                                         self.context,
                                                                                                         flagged)
             if self.note != '':
