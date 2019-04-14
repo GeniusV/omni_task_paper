@@ -103,3 +103,6 @@ class AnimateTest(unittest.TestCase):
 
     def test_increase_episode(self):
         omni_animate3.run('/Users/GeniusV/Desktop/omni.txt -e 15 -d 201809011100'.split(), debug = True)
+
+    def test_chinese_note(self):
+        omni_animate3.run('-n test_name -d 201809010000 -t http://test.com?keyword=添加元素 http://test.com?keyword=添加'.split(), debug = True)

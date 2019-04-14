@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 
 import requests
 from omnifocus.omni import Omni
+from urllib.parse import quote
 
 tod = datetime(year = datetime.now().year, month = datetime.now().month, day = datetime.now().day)
 
@@ -251,10 +252,17 @@ def run(args = None, debug = False):
 
     defer = get_defer(args.delay, args.defer)
 
+    notes = []
+    for note in args.note: # type:str
+        if note.startswith('http://') or note.startswith("https://"):
+            note = quote(note, safe=':/?=')
+        notes.append(note)
+
+
     if not args.input:
-        generate(args.name, args.id, defer, args.episode, '\n'.join(args.note))
+        generate(args.name, args.id, defer, args.episode, '\n'.join(notes))
     else:
-        modify_omni(defer, '\n'.join(args.note))
+        modify_omni(defer, '\n'.join(notes))
         if args.episode:
             increase_episode(args.episode)
 
