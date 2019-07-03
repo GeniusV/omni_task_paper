@@ -255,7 +255,7 @@ def run(args = None, debug = False):
     notes = []
     for note in args.note: # type:str
         if note.startswith('http://') or note.startswith("https://"):
-            note = quote(note, safe=':/?=')
+            note = quote(note, safe=':/?=%')
         notes.append(note)
 
 
